@@ -1,0 +1,136 @@
+﻿<common:LayoutAwarePage x:Class="MvvmLight.MainPage"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:common="using:MvvmLight.Common"
+                        xmlns:ignore="http://www.ignore.com"
+                        mc:Ignorable="d ignore"
+                        d:DesignHeight="768"
+                        d:DesignWidth="1366"
+                        DataContext="{Binding Main, 
+                            Source={StaticResource Locator}}">
+
+    <Page.BottomAppBar>
+        <AppBar x:Name="appBar" IsOpen="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource RefreshAppBarButtonStyle}" 
+                            AutomationProperties.Name="Refresh Data" 
+                            Command="{Binding RefreshCommand}"/>
+                    <Button Style="{StaticResource AddAppBarButtonStyle}" 
+                            AutomationProperties.Name="Add Item" 
+                            Command="{Binding AddCommand}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" 
+                            Orientation="Horizontal">
+                    <Button Style="{StaticResource DeleteAppBarButtonStyle}"
+                            AutomationProperties.Name="Delete Selected Item" 
+                            Command="{Binding DeleteCommand}"/>
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </Page.BottomAppBar>
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Skins/MainSkin.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="PageTitle"
+                       Grid.Column="1"
+                       Text="contacts app"
+                       Style="{StaticResource PageHeaderTextStyle}" />
+        </Grid>
+        <ListView Grid.Row="1" SelectionMode="Single" 
+                  ItemsSource="{Binding Contacts}" 
+                  SelectedItem="{Binding SelectedContact, Mode=TwoWay}"
+                  Margin="80,50,80,50">
+        	<ListView.Resources>
+        		<DataTemplate x:Key="ContactTemplate">
+        			<Grid HorizontalAlignment="Left" Height="150" VerticalAlignment="Top" Width="300">
+        				<Grid.ColumnDefinitions>
+        					<ColumnDefinition Width="Auto"/>
+        					<ColumnDefinition Width="10"/>
+        					<ColumnDefinition/>
+        				</Grid.ColumnDefinitions>
+        				<Image HorizontalAlignment="Left" Height="90" VerticalAlignment="Top" Width="90" Source="Assets/Contact.png" Stretch="UniformToFill" Opacity="0.815"/>
+        				<Grid Grid.Column="2" Margin="0">
+        					<Grid.RowDefinitions>
+        						<RowDefinition/>
+        						<RowDefinition/>
+        						<RowDefinition/>
+        					</Grid.RowDefinitions>
+        					<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Center"/>
+        					<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Email}" VerticalAlignment="Center" Margin="0" Grid.Row="1" FontSize="13.333"/>
+        					<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding TwitterHandle}" VerticalAlignment="Center" Margin="0" Grid.Row="3" FontSize="13.333"/>
+        				</Grid>
+        			</Grid>
+        		</DataTemplate>
+        	</ListView.Resources>
+        	<ListView.ItemTemplate>
+        		<StaticResource ResourceKey="ContactTemplate"/>
+        	</ListView.ItemTemplate>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapGrid Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
+        <Grid x:Name="AddContactOverlay" Grid.RowSpan="3" Background="#C4000000" Visibility="Collapsed"
+              DataContext="{Binding AddContact, 
+                            Source={StaticResource Locator}}">
+        	<Grid.ColumnDefinitions>
+        		<ColumnDefinition Width="400"/>
+        		<ColumnDefinition/>
+        		<ColumnDefinition/>
+        		<ColumnDefinition Width="400"/>
+        	</Grid.ColumnDefinitions>
+        	<Grid.RowDefinitions>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        	</Grid.RowDefinitions>
+        	<TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="0" Grid.Row="3" TextWrapping="Wrap" Text="Name" VerticalAlignment="Center" FontSize="24"/>
+        	<TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="0,28.6,0,28.4" Grid.Row="4" TextWrapping="Wrap" Text="Email" VerticalAlignment="Center" FontSize="24"/>
+        	<TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="0,28.6,0,28.4" Grid.Row="5" TextWrapping="Wrap" Text="Twitter" VerticalAlignment="Center" FontSize="24"/>
+        	<TextBox Grid.Column="2" Margin="0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" Text="{Binding Name, Mode=TwoWay}" Height="44"/>
+            <TextBox Grid.Column="2" Margin="0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" Text="{Binding Email, Mode=TwoWay}" Height="44"/>
+            <TextBox Grid.Column="2" Margin="0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" Text="{Binding Twitter, Mode=TwoWay}" Height="44"/>
+        	<Button Content="Add" Grid.Column="1" 
+                    Command="{Binding AddCommand}"
+                    HorizontalAlignment="Center" Margin="0" Grid.Row="7" VerticalAlignment="Center" FontSize="24" Width="150"/>
+        	<Button Content="Cancel" 
+                    Command="{Binding CancelCommand}"
+                    Grid.Column="2" HorizontalAlignment="Center" Margin="66.5,18" Grid.Row="7" VerticalAlignment="Center" FontSize="24" Width="150"/>
+        	<TextBlock Grid.Column="1" HorizontalAlignment="Center" Margin="0" Grid.Row="1" TextWrapping="Wrap" Text="new contact" VerticalAlignment="Center" FontSize="32" Grid.ColumnSpan="2" FontFamily="Segoe UI Light"/>
+        </Grid>
+
+
+    </Grid>
+</common:LayoutAwarePage>
